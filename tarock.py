@@ -1,6 +1,7 @@
 '''Tarokk'''
 
 from random import randint, shuffle
+from collections import deque
 
 #######################################
 #
@@ -63,6 +64,10 @@ class Card(object):
     if me.isTarock: return str(me.num)
     else: return "%s %s" %(me.color, me.num)
   
+  def __gt__(me, other):
+    if not other: return True
+    return me.num > other.num
+  
   @staticmethod
   def random():
     # to randomize -- would we ever need it?
@@ -70,11 +75,11 @@ class Card(object):
 
 #######################################
 #
-class Deck(list):
+class Deck(deque):
 #######################################
   def __init__(self, arg=None):
     if arg:
-      list.__init__(self, arg)
+      deque.__init__(self, arg)
       return
     for color in Card.colors.values():
       if color==TAROKK:
@@ -83,6 +88,16 @@ class Deck(list):
       else:
         for figure in Card.figures.values():
           self.append(Card(figure, color))
+  def __repr__(self):
+    return "Deck%s" % self
+  def __str__(self):
+    return "["+ ", ".join([str(x) for x in self]) +"]"
+  
+  def deal(self, numOfCards):
+    cards = []
+    for i in range(numOfCards):
+      cards.append(self.popleft())
+    return cards
 
 #######################################
 #
@@ -90,12 +105,16 @@ class Table(object):
 #######################################
   def __init__(self):
     self.deck = Deck()
-    self.players = ['Eszak', 'Nyugat', 'Del', 'Kelet']
+    self.players = [UserPlayer('Eszak'), AIPlayer('Nyugat'), AIPlayer('Del'), AIPlayer('Kelet')]
+    self.dealer = -1 # so that user will start
     self.base = 1 # one unit of money
     # etc.
  
   def newParty(self):
     Party(self)
+    self.dealer += 1
+    while self.dealer >= len(self.players):
+      self.dealer -= len(self.players)
 
 #######################################
 #
@@ -105,6 +124,7 @@ class Party(object):
   
   def __init__(Q, table):
     Q.table = table
+    Q.caller = (table.dealer+1) % 4
     process(Q.kever, Q.emel, Q.oszt, Q.licit, Q.skart, Q.bemond, Q.lejatsz, Q.fizet)
   
   def kever(self):
@@ -115,11 +135,24 @@ class Party(object):
     print self.table.deck
   
   def emel(self):
-    pass
+    em = self.table.players[self.table.dealer -1].emel()
+    self.table.deck.rotate(em)
+    # debug
+    print self.table.deck
   
   def oszt(self):
     # 6 talon
-    pass
+    self.talon = self.table.deck.deal(6)
+    self._ossz(5)
+    self._ossz(4)
+    # debug
+    print self.table.deck
+    print self.talon
+ 
+  def _ossz(self, n):
+    for i in range(self.caller, self.caller +4):
+      j = i%4
+      self.table.players[j].cards += self.table.deck.deal(n)
   
   def licit(self):
     pass
@@ -131,13 +164,47 @@ class Party(object):
     pass
   
   def lejatsz(self):
-    pass
+    n = len(self.table.players[0].cards)
+    hit = None
+    winner = -1
+    for i in range(n):
+      Round=[]
+      for j in range(self.caller, self.caller+4):
+        k = j%4
+        card = self.table.players[k].call(Round)
+        Round.append(card)
+        if card > hit: 
+          hit = card
+          winner = k
+      self.caller = winner
+      self.table.players[winner].take(Round)
+      print self.table.players[winner].name, Round
     
   def fizet(self):
     pass
 
   _phases = [kever, emel, oszt, licit, skart, bemond, lejatsz, fizet]
 
+class Player(object):
+  def __init__(self, name):
+    self.name = name
+    self.cards = []
+    self.hits = []
+  def take(self, hits):
+    self.hits += hits
+
+
+class AIPlayer(Player):
+  def emel(self):
+    return randint(1,39)
+  def call(self, sofar):
+    return self.cards.pop(randint(0,len(self.cards)-1))
+
+class UserPlayer(Player):
+  def emel(self):
+    return 42 - int( raw_input("Hol emeled el? [2--40] ") )
+  def call(self, sofar):
+    return self.cards.pop(randint(0,len(self.cards)-1))
 
 #######################################
 #
