@@ -10,7 +10,12 @@ from players import *
 #
 class Table(object):
 #######################################
-  def __init__(self):
+  def __new__(cls, table=None):
+    if table: return table
+    return object.__new__(cls)
+    
+  def __init__(self, table=None):
+    if table: return   # should not be the case
     self.deck = Deck()
     self.players = Players( 
          [UserPlayer('Eszak'), AIPlayer('Nyugat'), AIPlayer('Del'), AIPlayer('Kelet')] )

@@ -90,7 +90,7 @@ class UserPlayer(Player):
           selected = True
           break
       if not (selected or handShown):
-        print "Kartyaid:", self.cards
+        print ' -'*10+"  Kartyaid:", self.cards
         handShown = True
       
       # to check against rules
