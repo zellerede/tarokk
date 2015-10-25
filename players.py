@@ -19,6 +19,8 @@ class Player(object):
 #######################################
   def __init__(self, name):
     self.name = name
+    self.newHand()
+  def newHand(self):
     self.cards = []
     self.hits = []
   def take(self, hits):
@@ -68,6 +70,10 @@ class AIPlayer(Player):
 #
 class UserPlayer(Player):
 #######################################
+  def __init__(self, name=''):
+    Player.__init__(self, name)
+    self.name = 'Felseged, ' + name
+
   def emel(self):
     return int( my_input("Hol emeled el? [2--40] ") )
   
@@ -75,12 +81,12 @@ class UserPlayer(Player):
     selected = False
     if sofar: 
       print "Eddig",sofar,
-
+    
     handShown = False
     while not selected:
       crd = my_input("Melyiket teszed? ")
       for card in self.cards:
-        if crd == str(card):
+        if crd.upper() == str(card):
           selected = True
           break
       if not (selected or handShown):

@@ -32,7 +32,9 @@ class Party(object):
   
   def __init__(Q, table):
     Q.table = table
-    Q.caller = (table.dealer+1) % 4
+    Q.caller = (table.dealer+1) % len(table.players)
+    for player in table.players.allFrom(Q.caller):
+      player.newHand()
     process(Q.kever, Q.emel, Q.oszt, Q.licit, Q.skart, Q.bemond, Q.lejatsz, Q.fizet)
   
   def kever(self):
@@ -66,7 +68,7 @@ class Party(object):
     pass
     
   def skart(self):
-    self.skart = self.talon
+    self.skart = self.talon[:]
   
   def bemond(self):
     pass
@@ -88,6 +90,9 @@ class Party(object):
       print self.table.players[winner].name, hit, ':', Round
     
   def fizet(self):
+     # debug
+    print self.table.deck
+    
     for p in self.table.players.allFrom():
       print p, "vitt:", sum([h.value for h in p.hits])
       self.table.deck += p.hits
@@ -102,6 +107,12 @@ def clean():
   del sys.modules['util']
   del sys.modules['deck']
   del sys.modules['players']
+
+def auto(on=True):
+  if on:
+    table.players[0] = AIPlayer('Eszak')
+  else:
+    table.players[0] = UserPlayer('Eszak')
 
 #######################################
 #
