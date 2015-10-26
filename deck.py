@@ -1,7 +1,7 @@
 from collections import deque
 
-execfile("util.py")
-#from util import *
+from util import *
+addSymbolsTo(globals())
 
 _createdCards = {}
 
@@ -57,12 +57,12 @@ class Deck(deque):
     if arg:
       deque.__init__(self, arg)
       return
-    for color in Card.colors.values():
+    for color in Card.colors:
       if color==TAROKK:
-        for tarock in Card.tarocks.values():
+        for tarock in Card.tarocks:
           self.append(Card(tarock))
       else:
-        for figure in Card.figures.values():
+        for figure in Card.figures:
           self.append(Card(figure, color))
   def __repr__(self):
     return "Deck%s" % self

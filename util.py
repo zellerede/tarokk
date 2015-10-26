@@ -3,8 +3,12 @@
 #  utility stuff: 
 #   - Symbols, 
 #   - processing a sequence of tasks
+#   - my_input using raw_input
+#   - @buildOnObject decorator
 #
 #######################################
+
+_globals = globals()
 
 class Symbol(object):
   def __init__(self, name, idx):
@@ -15,13 +19,41 @@ class Symbol(object):
   def __str__(self):
     return self.name
 
+class ShiftedList(list):
+  def __init__(self, iterable=[], shift=0):
+    list.__init__(self, iterable)
+    self.start = shift
+  def shift(self, num):
+    self.start += num
+  def _diff(self, idx):
+    return (idx - self.start)
+  def __getitem__(self, idx):
+    return list.__getitem__(self, self._diff(idx))
+  def __setitem__(self, idx, value):
+    return list.__setitem__(self, self._diff(idx), value)
+  def __getslice__(self, start, end):
+    return list.__getslice__(self, self._diff(start), self._diff(end))
+  def __setslice__(self, start, end, value):
+    return list.__setslice__(self, self._diff(start), self._diff(end), value)
+
 def Symbols(*symbols,**instructions):
+  ''' use  addSymbolsTo(globals())  or  addSymbolsTo(locals()) before first usage '''
+  global _globals
+
   idx = instructions.get('start', 1)
-  symGroup = {}
+  symGroup = ShiftedList(shift=idx)
   for sym in symbols:
-    globals()[sym] = symGroup[idx] = Symbol(sym, idx)
+    _globals[sym] = Symbol(sym, idx)
+    symGroup.append( _globals[sym] )
     idx += 1
   return symGroup
+
+def addSymbolsTo(namespace):
+  ''' This method is needed if module is imported. 
+Usage:  addSymbolsTo(globals())
+    or  addSymbolsTo(locals()) '''
+  global _globals
+  _globals = namespace 
 
 #######################################
 

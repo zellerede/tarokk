@@ -2,7 +2,7 @@
 
 from random import randint, shuffle
 
-from util import *  # execfile("util.py") #
+from util import *
 from deck import *
 from players import *
 
@@ -11,6 +11,7 @@ CHANGE_SEQUENCE = [ (0,2,2,2),
                     (2,2,1,1),
                     (3,1,1,1) ]
 
+addSymbolsTo(globals())
 scenarios = Symbols('PARTY','TULETROA','NEGYKIRALY') # etc
 
 #######################################
