@@ -63,20 +63,19 @@ class Party(object):
     self._ossz(4)
     for player in self.table.players.allFrom():
       player.showCards()
-    
- 
-  def _ossz(self, n):
-    for player in self.table.players.allFrom(self.caller):
-      player.cards += self.table.deck.deal(n)
-  
+
   def licit(self):
-    pass
+    self.teller = self.caller
     
   def skart(self):
     self.skart = self.talon[:]
   
   def bemond(self):
-    pass
+    partnerCard = self.table.players[self.teller].askPartner()
+    # debug
+    print self.table.players[self.teller], "will be with who has", partnerCard
+    self._arrangeGrpWithWhoHas(partnerCard)
+    # further figures to make
   
   def lejatsz(self):
     n = len(self.table.players[0].cards)
@@ -95,15 +94,48 @@ class Party(object):
       print self.table.players[winner].name, hit, ':', Round
     
   def fizet(self):
-     # debug
-    print self.table.deck
+    print
+    print "Felvevok:", self.challengers
+    summ=0
+    for p in self.challengers:
+      s = sum([h.value for h in p.hits])
+      print p, "vitt:", s
+      summ += s
+    print "Szumma", summ, "pont"
+    print "-"*32
+    summ=0
+    for p in self.poors:
+      s = sum([h.value for h in p.hits])
+      print p, "vitt:", s
+      summ += s
+    print "Szumma", summ, "pont"
     
-    for p in self.table.players.allFrom():
-      print p, "vitt:", sum([h.value for h in p.hits])
+    for p in self.table.players:
       self.table.deck += p.hits
     self.table.deck += self.skart
-    # debug
-    print self.table.deck
+    
+    # talon
+    print "Skart volt:", self.skart
+
+##############################
+#
+  def _arrangeGrpWithWhoHas(self, card):
+    partner = None
+    allPlayers = set( self.table.players.all() )
+    for player in allPlayers:
+      if card in player.cards:
+        partner = player
+    self.challengers = {self.table.players[self.teller]}
+    if partner:
+      self.challengers.add( partner )
+    self.poors = allPlayers - self.challengers
+  
+  
+  def _ossz(self, n):
+    for player in self.table.players.allFrom(self.caller):
+      player.cards += self.table.deck.deal(n)
+  
+
 
 ###
 # dev

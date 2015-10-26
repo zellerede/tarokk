@@ -8,6 +8,8 @@ class Players(list):
     for i in self.indicesFrom(idx):
       yield self[i]
   
+  all = allFrom
+  
   def indicesFrom(self, idx=0):
     for i in range(idx, idx+4):
       yield i % len(self)
@@ -64,7 +66,12 @@ class AIPlayer(Player):
 #######################################
   def emel(self):
     return randint(2,40)
-      
+  
+  def askPartner(self):
+    tarokks = self.cardsOfColor(TAROKK)
+    maybePartner = set(range(2,21)) - {t.num.index for t in tarokks}
+    partnerCardValue = max(maybePartner)
+    return Card( Card.tarocks[partnerCardValue] )
 
 #######################################
 #
@@ -104,3 +111,15 @@ class UserPlayer(Player):
     print "*", ' '*len(s), "*"
     print stars
  
+  def askPartner(self):
+    selected = False
+    while not selected:
+      crd = my_input("Kivel leszel? ")
+      try:
+        num = eval(crd.strip().upper())
+        selected = True
+      except NameError:
+        pass
+    return Card(num)
+    
+

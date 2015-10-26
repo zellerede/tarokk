@@ -1,6 +1,9 @@
 from collections import deque
 
 execfile("util.py")
+#from util import *
+
+_createdCards = {}
 
 #######################################
 #
@@ -11,6 +14,16 @@ class Card(object):
   tarocks = Symbols('I','II','III','IIII','V','VI','VII','VIII','IX','X',
                     'XI','XII','XIII','XIV','XV','XVI','XVII','XVIII',
                     'XIX','XX','XXI','SKIZ')              
+  
+  # singleton
+  def __new__(cls, num, color=TAROKK):
+    global _createdCards
+    
+    if (color,num) in _createdCards:
+      return _createdCards[(color,num)]
+    newCard = object.__new__(cls, num, color)
+    _createdCards[(color,num)] = newCard
+    return newCard
   
   def __init__(my, num, color=TAROKK):
     my.color = color
