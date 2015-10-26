@@ -37,3 +37,28 @@ def my_input(*args, **kws):
   if x in ['q', 'Q', 'quit', 'Quit']:
     raise Exception("See you")
   return x
+
+#######################################
+
+def buildOn(obj):
+  '''decorator buildOn an object'''
+  notFromBase = object()
+  def fromBaseObj(attr):
+    return getattr(obj, attr, notFromBase)
+
+  def decorate(cls):
+    class Decorated(cls):
+      def __getattribute__(self,attr):
+        val = fromBaseObj(attr)
+        if val == notFromBase:
+          return cls.__getattribute__(self,attr)
+        return val
+      def __setattr__(self,attr,value):
+        if fromBaseObj(attr) == notFromBase:
+          cls.__setattr__(self,attr,value)
+          return
+        setattr(obj,attr,value)
+      # __delattr__ ... noo explicitly used I guess
+    return Decorated
+  return decorate
+ 
