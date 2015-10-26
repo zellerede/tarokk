@@ -73,4 +73,4 @@ class Deck(deque):
     cards = []
     for i in range(numOfCards):
       cards.append(self.popleft())
-    return cards
+    return Deck(cards)

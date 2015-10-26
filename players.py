@@ -59,6 +59,15 @@ class Player(object):
     card = self.select( sofar )
     self.cards.remove(card)
     return card
+  
+  def fektet(self, num):
+    fektetett = []
+    for i in range(num):
+      changeable = [card for card in self.cards if (card.value < 5)]
+      card = self.selectAmong(changeable)
+      fektetett.append(card)
+      self.cards.remove(card)
+    return fektetett
 
 #######################################
 #
@@ -72,6 +81,12 @@ class AIPlayer(Player):
     maybePartner = set(range(2,21)) - {t.num.index for t in tarokks}
     partnerCardValue = max(maybePartner)
     return Card( Card.tarocks[partnerCardValue] )
+
+  def selectAmong(self, someCards):
+    return choice(someCards)
+
+  def licit(self):
+    return choice([3]*6 + [2]*4 + [1]*2 + [0])
 
 #######################################
 #
@@ -102,6 +117,27 @@ class UserPlayer(Player):
       
       # to check against rules
     return card
+
+  def selectAmong(self, someCards):
+    selected = False
+    helpShown = handShown = False
+    while not selected:
+      crd = my_input("Melyiket teszed? ")
+      for card in someCards:
+        if crd.upper() == str(card):
+          selected = True
+          break
+      if not (selected or helpShown):
+        print ' -'*10+"  Valaszthato:", someCards
+        helpShown = True
+      elif not (selected or handShown):
+        print ' -'*10+"  Kartyaid:", self.cards
+        handShown = True
+      # to check against rules
+    return card
+
+  def licit(self):
+    return int(my_input("Hany lapot huznal? [0--3] : "))
 
   def showCards(self):
     s = str(self.cards)

@@ -2,20 +2,22 @@
 
 from random import randint, shuffle
 
-from util import *
+from util import *  # execfile("util.py") #
 from deck import *
 from players import *
+
+CHANGE_SEQUENCE = [ (0,2,2,2),
+                    (1,2,2,1),
+                    (2,2,1,1),
+                    (3,1,1,1) ]
+
+scenarios = Symbols('PARTY','TULETROA','NEGYKIRALY') # etc
 
 #######################################
 #
 class Table(object):
 #######################################
-  def __new__(cls, table=None):
-    if table: return table
-    return object.__new__(cls)
-    
-  def __init__(self, table=None):
-    if table: return   # should not be the case
+  def __init__(self):
     self.deck = Deck()
     self.players = Players( 
          [UserPlayer('Eszak'), AIPlayer('Nyugat'), AIPlayer('Del'), AIPlayer('Kelet')] )
@@ -24,7 +26,7 @@ class Table(object):
     # etc.
  
   def newParty(self):
-    Party(self)
+    Party(self) # the Party instance overlaps all attributes of self
     self.dealer += 1
     self.dealer %= len(self.players)
 
@@ -34,7 +36,8 @@ class Table(object):
 class Party(object):
 #######################################
   
-  def __init__(self): # we will have an addition Table type parameter with shared attributes
+  def __init__(self): 
+  # we will have an addition Table type parameter with shared attributes(!!!)
     self.caller = (self.dealer+1) % len(self.players)
     for player in self.players.allFrom(self.caller):
       player.newHand()
@@ -46,6 +49,7 @@ class Party(object):
             self.bemond, 
             self.lejatsz, 
             self.fizet)
+ 
  
   def kever(self):
   ####################################### 
@@ -75,10 +79,30 @@ class Party(object):
   def licit(self):
   #######################################
     self.teller = self.caller
+    self.numOfCardsToChange = self.players[self.teller].licit()
+    print self.players[self.teller], "nyeri a licitet: ***", self.numOfCardsToChange, "***"
+    self.partyPay = 4 - self.numOfCardsToChange
+    # self.scenarios[PARTY].pay = 4 - self.numOfCardsToChange
     
   def skart(self):
   #######################################
-    self.skart = self.talon[:]
+    self.skartolt = []
+    i = 0
+    changeSequence = CHANGE_SEQUENCE[self.numOfCardsToChange]
+    for player in self.players.allFrom(self.teller):
+      num = changeSequence[i]
+      if num:
+        newCards = self.talon.deal( num )
+        player.cards += newCards
+        player.showCards()
+        fektetett = player.fektet( num )
+        self.skartolt += fektetett
+        # 
+        # if i: 
+        #   self.skartolt += fektetett
+        # else:
+        #   player.hits += fektetett
+      i += 1
   
   def bemond(self):
   #######################################
@@ -125,10 +149,10 @@ class Party(object):
     
     for p in self.players:
       self.deck += p.hits
-    self.deck += self.skart
+    self.deck += self.skartolt
     
     # talon
-    print "Skart volt:", self.skart
+    print "Skart volt:", self.skartolt
     print "\n"+ '-'*42 +"\n"
 
 ##############################
