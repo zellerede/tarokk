@@ -40,25 +40,47 @@ def my_input(*args, **kws):
 
 #######################################
 
-def buildOn(obj):
-  '''decorator buildOn an object'''
-  notFromBase = object()
-  def fromBaseObj(attr):
-    return getattr(obj, attr, notFromBase)
+def buildOnObject(cls):
+  '''decorator buildOnObject:
 
-  def decorate(cls):
-    class Decorated(cls):
-      def __getattribute__(self,attr):
-        val = fromBaseObj(attr)
-        if val == notFromBase:
-          return cls.__getattribute__(self,attr)
-        return val
-      def __setattr__(self,attr,value):
-        if fromBaseObj(attr) == notFromBase:
-          cls.__setattr__(self,attr,value)
-          return
-        setattr(obj,attr,value)
-      # __delattr__ ... noo explicitly used I guess
-    return Decorated
-  return decorate
- 
+Usage example:
+
+@buildOnObject
+class X(superclass):
+  ...
+
+x=X(obj,*rest,**kws)
+# calls X.__init__(x, *rest, **kws)
+# and attaches all attributes directly to the instance of (decorated) X
+# so, if obj had  obj.attr = 12, then x.attr will return 12
+# and modifying x.attr will directly modify obj.attr
+'''
+  notFromBase = object()
+
+  class Decorated(cls):
+    _baseObjs = {}
+
+    def __init__(self, baseObj, *args, **kws):
+      Decorated._baseObjs[self] = baseObj
+      Decorated.__name__ == "D_" + cls.__name__
+      cls.__init__(self, *args, **kws)
+
+    def _fromBaseObj(self, attr):
+      return getattr(Decorated._baseObjs.get(self, None), attr, notFromBase)
+
+    def __getattribute__(self, attr):
+      val = Decorated._fromBaseObj(self, attr)
+      if val == notFromBase:
+        return cls.__getattribute__(self, attr)
+      return val
+
+    def __setattr__(self, attr, value):
+      global _baseObjs
+      if Decorated._fromBaseObj(self, attr) == notFromBase:
+        cls.__setattr__(self, attr, value)
+        return
+      setattr(Decorated._baseObjs[self], attr, value)
+
+    # __delattr__ ... noo explicitly used I guess
+
+  return Decorated

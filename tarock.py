@@ -26,74 +26,87 @@ class Table(object):
   def newParty(self):
     Party(self)
     self.dealer += 1
-    while self.dealer >= len(self.players):
-      self.dealer -= len(self.players)
+    self.dealer %= len(self.players)
 
 #######################################
 #
+@buildOnObject
 class Party(object):
 #######################################
-  # todo: Party(Table) and inherit all properties at __new__/__init__ instead of copying them...
   
-  def __init__(Q, table):
-    Q.table = table
-    Q.caller = (table.dealer+1) % len(table.players)
-    for player in table.players.allFrom(Q.caller):
+  def __init__(self): # we will have an addition Table type parameter with shared attributes
+    self.caller = (self.dealer+1) % len(self.players)
+    for player in self.players.allFrom(self.caller):
       player.newHand()
-    process(Q.kever, Q.emel, Q.oszt, Q.licit, Q.skart, Q.bemond, Q.lejatsz, Q.fizet)
-  
+    process(self.kever, 
+            self.emel, 
+            self.oszt, 
+            self.licit, 
+            self.skart, 
+            self.bemond, 
+            self.lejatsz, 
+            self.fizet)
+ 
   def kever(self):
+  ####################################### 
     n = randint(1,8)
     for i in range(n):
-      shuffle(self.table.deck)
+      shuffle(self.deck)
     # debug
-    # print self.table.deck
+    # print self.deck
   
   def emel(self):
-    emelo = self.table.players[self.table.dealer -1]
+  #######################################
+    emelo = self.players[self.dealer -1]
     em = 42 - emelo.emel()
-    self.table.deck.rotate(em)
+    self.deck.rotate(em)
     # debug
-    # print self.table.deck
+    # print self.deck
   
   def oszt(self):
+  #######################################
     # 6 talon
-    self.talon = self.table.deck.deal(6)
+    self.talon = self.deck.deal(6)
     self._ossz(5)
     self._ossz(4)
-    for player in self.table.players.allFrom():
+    for player in self.players.all():
       player.showCards()
 
   def licit(self):
+  #######################################
     self.teller = self.caller
     
   def skart(self):
+  #######################################
     self.skart = self.talon[:]
   
   def bemond(self):
-    partnerCard = self.table.players[self.teller].askPartner()
+  #######################################
+    partnerCard = self.players[self.teller].askPartner()
     # debug
-    print self.table.players[self.teller], "will be with who has", partnerCard
+    print self.players[self.teller], "will be with who has", partnerCard
     self._arrangeGrpWithWhoHas(partnerCard)
     # further figures to make
   
   def lejatsz(self):
-    n = len(self.table.players[0].cards)
+  #######################################
+    n = len(self.players[self.caller].cards)
     for i in range(n):
       hit = None
       winner = -1
       Round=[]
-      for j in self.table.players.indicesFrom(self.caller):
-        card = self.table.players[j].call(Round)
+      for j in self.players.indicesFrom(self.caller):
+        card = self.players[j].call(Round)
         Round.append(card)
         if card > hit: 
           hit = card
           winner = j
       self.caller = winner
-      self.table.players[winner].take(Round)
-      print self.table.players[winner].name, hit, ':', Round
+      self.players[winner].take(Round)
+      print self.players[winner].name, hit, ':', Round
     
   def fizet(self):
+  #######################################
     print
     print "Felvevok:", self.challengers
     summ=0
@@ -110,30 +123,31 @@ class Party(object):
       summ += s
     print "Szumma", summ, "pont"
     
-    for p in self.table.players:
-      self.table.deck += p.hits
-    self.table.deck += self.skart
+    for p in self.players:
+      self.deck += p.hits
+    self.deck += self.skart
     
     # talon
     print "Skart volt:", self.skart
+    print "\n"+ '-'*42 +"\n"
 
 ##############################
 #
   def _arrangeGrpWithWhoHas(self, card):
     partner = None
-    allPlayers = set( self.table.players.all() )
+    allPlayers = set( self.players.all() )
     for player in allPlayers:
       if card in player.cards:
         partner = player
-    self.challengers = {self.table.players[self.teller]}
+    self.challengers = {self.players[self.teller]}
     if partner:
       self.challengers.add( partner )
     self.poors = allPlayers - self.challengers
   
   
   def _ossz(self, n):
-    for player in self.table.players.allFrom(self.caller):
-      player.cards += self.table.deck.deal(n)
+    for player in self.players.allFrom(self.caller):
+      player.cards += self.deck.deal(n)
   
 
 
@@ -156,5 +170,5 @@ def auto(on=True):
 if __name__ == '__main__':
 #######################################
   table = Table()
+  # while True:
   table.newParty()
-
