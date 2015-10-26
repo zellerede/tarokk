@@ -5,14 +5,12 @@ from random import randint, shuffle
 from util import *
 from deck import *
 from players import *
+from scenarios import *
 
 CHANGE_SEQUENCE = [ (0,2,2,2),
                     (1,2,2,1),
                     (2,2,1,1),
                     (3,1,1,1) ]
-
-addSymbolsTo(globals())
-scenarios = Symbols('PARTY','TULETROA','NEGYKIRALY') # etc
 
 #######################################
 #
@@ -42,6 +40,7 @@ class Party(object):
     self.caller = (self.dealer+1) % len(self.players)
     for player in self.players.allFrom(self.caller):
       player.newHand()
+    self.scenarios = [scena(self) for scena in SCENARIOS]
     process(self.kever, 
             self.emel, 
             self.oszt, 
@@ -134,19 +133,11 @@ class Party(object):
   #######################################
     print
     print "Felvevok:", self.challengers
-    summ=0
-    for p in self.challengers:
-      s = sum([h.value for h in p.hits])
-      print p, "vitt:", s
-      summ += s
-    print "Szumma", summ, "pont"
-    print "-"*32
-    summ=0
-    for p in self.poors:
-      s = sum([h.value for h in p.hits])
-      print p, "vitt:", s
-      summ += s
-    print "Szumma", summ, "pont"
+    self._collectHitsOf(self.challengers)
+    self._collectHitsOf(self.poors) # todo: arrange skart as well
+    
+    for scenario in self.scenarios:
+      scenario.getWinner()
     
     for p in self.players:
       self.deck += p.hits
@@ -160,20 +151,25 @@ class Party(object):
 #
   def _arrangeGrpWithWhoHas(self, card):
     partner = None
-    allPlayers = set( self.players.all() )
+    allPlayers = Players( self.players.all() )
     for player in allPlayers:
       if card in player.cards:
         partner = player
-    self.challengers = {self.players[self.teller]}
+    self.challengers = Players([ self.players[self.teller] ])
     if partner:
-      self.challengers.add( partner )
+      self.challengers.append( partner )
     self.poors = allPlayers - self.challengers
+    self.teams = (self.challengers, self.poors)
   
+  def _collectHitsOf(self, team):
+    allHits = []
+    for player in team:
+      allHits += player.hits
+    team.hits = allHits
   
   def _ossz(self, n):
     for player in self.players.allFrom(self.caller):
       player.cards += self.deck.deal(n)
-  
 
 
 ###
@@ -183,6 +179,7 @@ def clean():
   del sys.modules['util']
   del sys.modules['deck']
   del sys.modules['players']
+  del sys.modules['scenarios']
 
 def auto(on=True):
   if on:
@@ -195,5 +192,6 @@ def auto(on=True):
 if __name__ == '__main__':
 #######################################
   table = Table()
+  auto()
   # while True:
   table.newParty()

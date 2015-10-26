@@ -13,7 +13,13 @@ class Players(list):
   def indicesFrom(self, idx=0):
     for i in range(idx, idx+4):
       yield i % len(self)
-    
+  
+  def __sub__(self, sub):
+    rest = Players(self)
+    for x in sub:
+      if x in self:
+        rest.remove(x)
+    return rest
 
 #######################################
 #
@@ -64,7 +70,7 @@ class Player(object):
     fektetett = []
     for i in range(num):
       changeable = [card for card in self.cards if (card.value < 5)]
-      card = self.selectAmong(changeable)
+      card = self.selectToSkart(changeable)
       fektetett.append(card)
       self.cards.remove(card)
     return fektetett
@@ -82,11 +88,18 @@ class AIPlayer(Player):
     partnerCardValue = max(maybePartner)
     return Card( Card.tarocks[partnerCardValue] )
 
+
+  def selectToSkart(self, someCards):
+    changeThese = [card for card in someCards if (card.color != TAROKK)]
+    if changeThese: 
+      return choice(changeThese)
+    return min(set(someCards)-{Card(II)})
+
   def selectAmong(self, someCards):
     return choice(someCards)
 
   def licit(self):
-    return choice([3]*6 + [2]*4 + [1]*2 + [0])
+    return choice([3]*2 + [2]*4 + [1]*3 + [0])
 
 #######################################
 #
@@ -118,11 +131,11 @@ class UserPlayer(Player):
       # to check against rules
     return card
 
-  def selectAmong(self, someCards):
+  def selectToSkart(self, someCards):
     selected = False
     helpShown = handShown = False
     while not selected:
-      crd = my_input("Melyiket teszed? ")
+      crd = my_input("Melyiket fekteted? ")
       for card in someCards:
         if crd.upper() == str(card):
           selected = True

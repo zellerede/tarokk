@@ -18,6 +18,8 @@ class Symbol(object):
     return "(symbol)%s" % self.name
   def __str__(self):
     return self.name
+  def __lt__(self, other):
+    return self.index < other.index
 
 class ShiftedList(list):
   def __init__(self, iterable=[], shift=0):
@@ -49,7 +51,7 @@ def Symbols(*symbols,**instructions):
   return symGroup
 
 def addSymbolsTo(namespace):
-  ''' This method is needed if module is imported. 
+  ''' This method is needed before usage of Symbols if module is imported. 
 Usage:  addSymbolsTo(globals())
     or  addSymbolsTo(locals()) '''
   global _globals
@@ -107,12 +109,15 @@ x=X(obj,*rest,**kws)
       return val
 
     def __setattr__(self, attr, value):
-      global _baseObjs
       if Decorated._fromBaseObj(self, attr) == notFromBase:
         cls.__setattr__(self, attr, value)
         return
       setattr(Decorated._baseObjs[self], attr, value)
 
-    # __delattr__ ... noo explicitly used I guess
+    def __delattr__(self, attr):
+      if Decorated._fromBaseObj(self, attr) == notFromBase:
+        cls.__delattr__(self, attr)
+        return
+      delattr(Decorated._baseObjs[self], attr)
 
   return Decorated
