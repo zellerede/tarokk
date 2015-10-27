@@ -218,6 +218,14 @@ def auto(on=True):
   else:
     table.players[0] = UserPlayer('Eszak')
 
+class OneLetterStart:
+  def __repr__(self):
+    if not table.deck: table.deck = Deck()
+    table.newParty()
+    return ''
+
+n=OneLetterStart()
+
 #######################################
 #
 if __name__ == '__main__':
