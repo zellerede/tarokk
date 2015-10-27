@@ -3,7 +3,7 @@ from random import randint, choice
 from deck import *
 from util import my_input
 
-class Players(list):
+class Players(CycleList):
   def allFrom(self, idx=0):
     for i in self.indicesFrom(idx):
       yield self[i]
@@ -74,6 +74,11 @@ class Player(object):
       fektetett.append(card)
       self.cards.remove(card)
     return fektetett
+  
+  def sapka(self):
+    print "^"*42
+    print " "*8, self, "wearing the HAT"
+    print "v"*42
 
 #######################################
 #

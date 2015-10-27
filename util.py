@@ -5,10 +5,38 @@
 #   - processing a sequence of tasks
 #   - my_input using raw_input
 #   - @buildOnObject decorator
+#   - ShiftedList and CycleList
 #
 #######################################
 
 _globals = globals()
+
+class IdxMachinateList(list):
+  def modify(self, idx):
+    return idx
+  def __getitem__(self, idx):
+    return list.__getitem__(self, self.modify(idx))
+  def __setitem__(self, idx, value):
+    return list.__setitem__(self, self.modify(idx), value)
+  def __getslice__(self, start, end):
+    return list.__getslice__(self, self.modify(start), self.modify(end))
+  def __setslice__(self, start, end, value):
+    return list.__setslice__(self, self.modify(start), self.modify(end), value)
+
+class ShiftedList(IdxMachinateList):
+  def __init__(self, iterable=[], shift=0):
+    IdxMachinateList.__init__(self, iterable)
+    self.start = shift
+  def shift(self, num):
+    self.start += num
+  def modify(self, idx):
+    return (idx - self.start)
+
+class CycleList(IdxMachinateList):
+  def modify(self, idx):
+    if self:
+      return (idx % len(self))
+    return idx
 
 class Symbol(object):
   def __init__(self, name, idx):
@@ -20,23 +48,6 @@ class Symbol(object):
     return self.name
   def __lt__(self, other):
     return self.index < other.index
-
-class ShiftedList(list):
-  def __init__(self, iterable=[], shift=0):
-    list.__init__(self, iterable)
-    self.start = shift
-  def shift(self, num):
-    self.start += num
-  def _diff(self, idx):
-    return (idx - self.start)
-  def __getitem__(self, idx):
-    return list.__getitem__(self, self._diff(idx))
-  def __setitem__(self, idx, value):
-    return list.__setitem__(self, self._diff(idx), value)
-  def __getslice__(self, start, end):
-    return list.__getslice__(self, self._diff(start), self._diff(end))
-  def __setslice__(self, start, end, value):
-    return list.__setslice__(self, self._diff(start), self._diff(end), value)
 
 def Symbols(*symbols,**instructions):
   ''' use  addSymbolsTo(globals())  or  addSymbolsTo(locals()) before first usage '''
@@ -96,7 +107,7 @@ x=X(obj,*rest,**kws)
 
     def __init__(self, baseObj, *args, **kws):
       Decorated._baseObjs[self] = baseObj
-      Decorated.__name__ == "D_" + cls.__name__
+      type(self).__name__ == cls.__name__ + "("+str(baseObj)+")"
       cls.__init__(self, *args, **kws)
 
     def _fromBaseObj(self, attr):

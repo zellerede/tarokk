@@ -194,6 +194,12 @@ class Round(list):
     for attr in kws:
       setattr(self, attr, kws[attr])
 
+  def whoHad(self, card):
+    if card not in self: 
+      return
+    return (self.index(card) + self.caller)
+
+
 ################################################################
 ###
 ##   ...dev

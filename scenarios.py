@@ -9,7 +9,6 @@ class Scenario(object):
     if winnerTeam:
       print type(self).__name__+"!", winnerTeam
 
-
 class Parti(Scenario):
   def getWinner(self):
     challenged = self._calcHitsOf(self.challengers)
@@ -53,8 +52,9 @@ class XXI_fogas(Scenario):
     type(self).__name__ = 'XXI-es fogas'
     for rundo in self.rounds:
       if self.cards <= set(rundo):
-        return self.teamOf(rundo.winner)
-        #print "XXI-es fogas!", team
+        theNewMajor = rundo.whoHad( Card(XXI) )
+        self.players[theNewMajor].sapka()
+        return self.otherTeam( self.teamOf(theNewMajor) )
 
 class Volat(Scenario):
   def getWinner(self):
@@ -67,8 +67,21 @@ class Ultimi(Scenario):
   roundIdx = -1 # last one
   def getWinner(self):
     round2check = self.rounds[ self.roundIdx ]
+    tried, card = self.checkIfTried(round2check)
     if round2check.winnerCard in self.cards:
       return self.teamOf(round2check.winner)
+    if tried:
+      print type(self).__name__, "kiserlet!"
+      return self.otherTeam(
+                self.teamOf(round2check.whoHad(card)) )
+
+  def checkIfTried(self, round2check):
+    tried = self.cards & set(round2check)
+    card = None
+    if tried:
+      card = list(tried)[0] # should contain exactly 1 element for all of our use cases
+    return bool(tried), card
+
 
 class Pagat:
   cards = {Card(I)}
@@ -78,10 +91,12 @@ class Sas:
 
 class Kiraly:
   cards = Card.kings
+  def checkIfTried(self, rundo):
+    return False, None
 
 class Pagatultimo(Pagat, Ultimi): pass
 class Sasultimo(Sas, Ultimi): pass
-class Kiralyultimo(Ultimi): pass
+class Kiralyultimo(Kiraly, Ultimi): pass
 
 class Uhu(Ultimi):
   roundIdx = -2 # one before last
@@ -92,6 +107,10 @@ class Kiralyuhu(Kiraly, Uhu): pass
 
 class Facan(Ultimi):
   roundIdx = 0 # first round
+  def checkIfTried(self, rundo):
+    if rundo[0].color==TAROKK:
+      return False, None
+    return Ultimi.checkIfTried(self, rundo)
 
 class Pagatfacan(Pagat, Facan): pass
 class Sasfacan(Sas, Facan): pass
