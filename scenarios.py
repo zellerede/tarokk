@@ -4,10 +4,13 @@ from deck import *
 
 @buildOnObject # of class Party
 class Scenario(object):
+  def __init__(self):
+    self.name = type(self).__name__
+
   def investigate(self):
     winnerTeam = self.getWinner()
     if winnerTeam:
-      print type(self).__name__+"!", winnerTeam
+      print self.name+"!", winnerTeam
 
 class Parti(Scenario):
   def getWinner(self):
@@ -49,7 +52,7 @@ class Negykiraly(Scenario):
 class XXI_fogas(Scenario):
   cards = {Card(XXI), Card(SKIZ)}
   def getWinner(self):
-    type(self).__name__ = 'XXI-es fogas'
+    self.name = 'XXI-es fogas'
     for rundo in self.rounds:
       if self.cards <= set(rundo):
         theNewMajor = rundo.whoHad( Card(XXI) )
@@ -71,7 +74,7 @@ class Ultimi(Scenario):
     if round2check.winnerCard in self.cards:
       return self.teamOf(round2check.winner)
     if tried:
-      print type(self).__name__, "kiserlet!"
+      self.name += " kiserlet"
       return self.otherTeam(
                 self.teamOf(round2check.whoHad(card)) )
 
@@ -119,4 +122,5 @@ SCENARIOS = (Parti, Tuletroa, Negykiraly, Duplajatek, XXI_fogas, Volat, Pagatult
              Sasultimo, Kiralyultimo, Pagatuhu, Sasuhu, Pagatfacan, Sasfacan) 
      # plusz akar:
      # -- tuletroa-rundo
-     # -- whatsoever
+     # -- pagat-rundo, 
+     # -- egyszinu-rundo (kiraly v dama visz)
