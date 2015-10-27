@@ -13,7 +13,8 @@ class Card(object):
   tarocks = Symbols('I','II','III','IIII','V','VI','VII','VIII','IX','X',
                     'XI','XII','XIII','XIV','XV','XVI','XVII','XVIII',
                     'XIX','XX','XXI','SKIZ')
-  honours = set()            
+  honours = set()
+  kings   = set()
   
   _createdCards = {}
   # singletoning
@@ -36,6 +37,8 @@ class Card(object):
         self.value = 1
     else:
       self.value = num.index
+      if num==KIRALY:
+        Card.kings.add(self)
   
   def __repr__(me):
     if me.isTarock: return str(me.num)

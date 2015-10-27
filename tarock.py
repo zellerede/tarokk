@@ -113,19 +113,23 @@ class Party(object):
   def lejatsz(self):
   #######################################
     n = len(self.players[self.caller].cards)
+    self.rounds = []
     for i in range(n):
       hit = None
       winner = -1
-      Round=[]
+      rundo = Round(caller=self.caller)
       for j in self.players.indicesFrom(self.caller):
-        card = self.players[j].call(Round)
-        Round.append(card)
+        card = self.players[j].call(rundo)
+        rundo.append(card)
         if card > hit: 
           hit = card
           winner = j
+      rundo.winner = winner
+      rundo.winnerCard = hit
+      self.rounds.append(rundo)
       self.caller = winner
-      self.players[winner].take(Round)
-      print self.players[winner].name, hit, ':', Round
+      self.players[winner].take(rundo)
+      print self.players[winner].name, hit, ':', rundo
     
   def fizet(self):
   #######################################
@@ -137,7 +141,7 @@ class Party(object):
     self.poors.hits += self.skartolt
     
     for scenario in self.scenarios:
-      scenario.getWinner()
+      scenario.investigate()
 
     # collect back the deck    
     for team in self.teams:
@@ -160,6 +164,16 @@ class Party(object):
       self.challengers.append( partner )
     self.poors = allPlayers - self.challengers
     self.teams = (self.challengers, self.poors)
+ 
+  def teamOf(self, player):
+    if not isinstance(player, Player):
+      player = self.players[player]
+    for team in self.teams:
+      if player in team: return team
+  
+  def otherTeam(self, team):
+    i = self.teams.index(team)
+    return self.teams[1-i]
   
   def _collectHitsOf(self, team):
     allHits = []
@@ -171,9 +185,20 @@ class Party(object):
     for player in self.players.allFrom(self.caller):
       player.cards += self.deck.deal(n)
 
+##############################
+#
+class Round(list):
+##############################
+  def __init__(self, *args, **kws):
+    list.__init__(self, *args)
+    for attr in kws:
+      setattr(self, attr, kws[attr])
 
+################################################################
 ###
-# dev
+##   ...dev
+#
+#
 def clean():
   import sys
   del sys.modules['util']
