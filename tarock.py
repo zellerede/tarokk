@@ -96,12 +96,10 @@ class Party(object):
         player.cards += newCards
         player.showCards()
         fektetett = player.fektet( num )
-        self.skartolt += fektetett
-        # 
-        # if i: 
-        #   self.skartolt += fektetett
-        # else:
-        #   player.hits += fektetett
+        if i: 
+          self.skartolt += fektetett
+        else:
+          player.hits += fektetett
       i += 1
   
   def bemond(self):
@@ -136,15 +134,17 @@ class Party(object):
     self._collectHitsOf(self.challengers)
     self._collectHitsOf(self.poors) # todo: arrange skart as well
     
+    self.poors.hits += self.skartolt
+    
     for scenario in self.scenarios:
       scenario.getWinner()
-    
-    for p in self.players:
-      self.deck += p.hits
-    self.deck += self.skartolt
-    
-    # talon
-    print "Skart volt:", self.skartolt
+
+    # collect back the deck    
+    for team in self.teams:
+      self.deck += team.hits
+
+    # skart
+    print "Ellenfel skartja volt:", self.skartolt
     print "\n"+ '-'*42 +"\n"
 
 ##############################

@@ -16,11 +16,10 @@ class Parti(Scenario):
     return {True:self.challengers, False:self.poors}[challengersWon]
 
   def _calcHitsOf(self, team):
-    summ=0
     for p in team:
       s = sum([h.value for h in p.hits])
       print p, "vitt:", s
-      summ += s
+    summ = sum([c.value for c in team.hits])
     print "Szumma", summ, "pont"
     return summ
 
