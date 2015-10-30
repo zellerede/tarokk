@@ -133,3 +133,19 @@ x=X(obj,*rest,**kws)
       delattr(Decorated._baseObjs[self], attr)
 
   return Decorated
+
+#######################################
+#
+class Cash(int):
+#######################################
+  def __init__(self, *args, **kws):
+    int.__init__(self, *args, **kws)
+    self.sign = '$'
+  def __repr__(self):
+    return int.__repr__(self) + self.sign
+  def __str__(self):
+    return int.__str__(self) + self.sign
+  def __add__(self, other):
+    return Cash(int.__add__(self, other))
+  def __sub__(self, other):
+    return Cash(int.__sub__(self, other))

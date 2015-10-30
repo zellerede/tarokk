@@ -1,7 +1,7 @@
 from random import randint, choice
 
 from deck import *
-from util import my_input
+from util import my_input, Cash
 
 class Players(CycleList):
   def allFrom(self, idx=0):
@@ -27,7 +27,7 @@ class Player(object):
 #######################################
   def __init__(self, name):
     self.name = name
-    self.cash = 200
+    self.cash = Cash(200)
     self.newHand()
   def newHand(self):
     self.cards = []

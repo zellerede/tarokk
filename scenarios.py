@@ -10,12 +10,21 @@ class Scenario(object):
 
   def investigate(self):
     winnerTeam = self.getWinner()
-    if winnerTeam:
-      print self.name+"!", winnerTeam
+
+    payment = self.earns
+    # print type(self), self.promised, type(self) in self.promised
+    if type(self) not in self.promised:
+      payment /= 2 # half the payment for silent scenario
+
+    if winnerTeam and payment:
+      print self.name+"!", winnerTeam, ":", Cash(payment)
       for player in winnerTeam:
-        player.cash += self.earns
+        # print player, player.cash, # debug
+        player.cash += payment
       for player in self.otherTeam(winnerTeam):
-        player.cash -= self.earns
+        # print player, player.cash, # debug
+        player.cash -= payment
+      # print # debug
 
 class Parti(Scenario):
   def getWinner(self):
@@ -37,10 +46,19 @@ class Parti(Scenario):
 
 class Duplajatek(Scenario):
   def getWinner(self):
-    earns = self.partyPay * 4
+    self.earns = self.partyPay * 4
     for team in self.teams:
       score = sum([c.value for c in team.hits])
       if score < 24:
+        self.partyPay = 0
+        return self.otherTeam(team)
+
+class Volat(Scenario):
+  def getWinner(self):
+    self.earns = self.partyPay * 6
+    for team in self.teams: # should be 2 teams
+      if not sum([p.hits for p in team], []):
+        self.partyPay = 0
         return self.otherTeam(team)
 
 class Tuletroa(Scenario):
@@ -68,13 +86,6 @@ class XXI_fogas(Scenario):
         theNewMajor = rundo.whoHad( Card(XXI) )
         self.players[theNewMajor].sapka()
         return self.otherTeam( self.teamOf(theNewMajor) )
-
-class Volat(Scenario):
-  def getWinner(self):
-    earns = self.partyPay * 6
-    for team in self.teams: # should be 2 teams
-      if not sum([p.hits for p in team], []):
-        return self.otherTeam(team)
 
 class Ultimi(Scenario):
   earns = 10
@@ -131,7 +142,7 @@ class Facan(Ultimi):
 class Pagatfacan(Pagat, Facan): pass
 class Sasfacan(Sas, Facan): pass
 
-SCENARIOS = (Parti, Tuletroa, Negykiraly, Duplajatek, XXI_fogas, Volat, Pagatultimo, 
+SCENARIOS = (Volat, Duplajatek, Parti, Tuletroa, Negykiraly, XXI_fogas, Pagatultimo, 
              Sasultimo, Kiralyultimo, Pagatuhu, Sasuhu, Pagatfacan, Sasfacan) 
      # plusz akar:
      # -- tuletroa-rundo

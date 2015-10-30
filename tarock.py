@@ -109,6 +109,7 @@ class Party(object):
     print self.players[self.teller], "will be with who has", partnerCard
     self._arrangeGrpWithWhoHas(partnerCard)
     # further figures to make
+    self.promised = [Parti]
   
   def lejatsz(self):
   #######################################
@@ -144,7 +145,7 @@ class Party(object):
       scenario.investigate()
     
     for player in self.players.all():
-      print player, ":", player.cash, "$\t",
+      print player, ":", player.cash, " \t",
     print
     print '-'*84
     print
@@ -219,10 +220,13 @@ def clean():
   del sys.modules['scenarios']
 
 def auto(on=True):
+  cash = table.players[0].cash
   if on:
-    table.players[0] = AIPlayer('Eszak')
+    me = table.players[0] = AIPlayer('Eszak')
+    me.cash = cash
   else:
-    table.players[0] = UserPlayer('Eszak')
+    me = table.players[0] = UserPlayer('Eszak')
+    me.cash = cash
 
 class WithoutParenthesis:
   def __init__(self, noArgFunc):
