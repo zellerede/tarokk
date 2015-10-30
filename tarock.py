@@ -82,7 +82,7 @@ class Party(object):
     self.numOfCardsToChange = self.players[self.teller].licit()
     print self.players[self.teller], "nyeri a licitet: ***", self.numOfCardsToChange, "***"
     self.partyPay = 4 - self.numOfCardsToChange
-    # self.scenarios[PARTY].pay = 4 - self.numOfCardsToChange
+    # self.scenarios[Parti].pay = 4 - self.numOfCardsToChange
     
   def skart(self):
   #######################################
@@ -142,6 +142,12 @@ class Party(object):
     
     for scenario in self.scenarios:
       scenario.investigate()
+    
+    for player in self.players.all():
+      print player, ":", player.cash, "$\t",
+    print
+    print '-'*84
+    print
 
     # collect back the deck    
     for team in self.teams:
@@ -218,13 +224,22 @@ def auto(on=True):
   else:
     table.players[0] = UserPlayer('Eszak')
 
-class OneLetterStart:
+class WithoutParenthesis:
+  def __init__(self, noArgFunc):
+    self.func = noArgFunc
   def __repr__(self):
-    if not table.deck: table.deck = Deck()
-    table.newParty()
+    self.func()
     return ''
 
-n=OneLetterStart()
+def Without():
+  return WithoutParenthesis
+
+@Without()
+def n():
+  if len(table.deck)!=42:
+    table.deck = Deck()
+  table.newParty()
+
 
 #######################################
 #

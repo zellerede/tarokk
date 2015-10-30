@@ -9,8 +9,6 @@
 #
 #######################################
 
-_globals = globals()
-
 class IdxMachinateList(list):
   def modify(self, idx):
     return idx
@@ -37,6 +35,9 @@ class CycleList(IdxMachinateList):
     if self:
       return (idx % len(self))
     return idx
+
+
+_globals = globals()
 
 class Symbol(object):
   def __init__(self, name, idx):

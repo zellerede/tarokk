@@ -4,6 +4,7 @@ from deck import *
 
 @buildOnObject # of class Party
 class Scenario(object):
+  earns = 0
   def __init__(self):
     self.name = type(self).__name__
 
@@ -11,9 +12,14 @@ class Scenario(object):
     winnerTeam = self.getWinner()
     if winnerTeam:
       print self.name+"!", winnerTeam
+      for player in winnerTeam:
+        player.cash += self.earns
+      for player in self.otherTeam(winnerTeam):
+        player.cash -= self.earns
 
 class Parti(Scenario):
   def getWinner(self):
+    self.earns = self.partyPay
     challenged = self._calcHitsOf(self.challengers)
     print "-"*32
     enemy = self._calcHitsOf(self.poors)
@@ -31,12 +37,14 @@ class Parti(Scenario):
 
 class Duplajatek(Scenario):
   def getWinner(self):
+    earns = self.partyPay * 4
     for team in self.teams:
       score = sum([c.value for c in team.hits])
       if score < 24:
         return self.otherTeam(team)
 
 class Tuletroa(Scenario):
+  earns = 2
   def getWinner(self):
     for team in self.teams:
       # print team, "\n    ", team.hits
@@ -44,12 +52,14 @@ class Tuletroa(Scenario):
         return team
 
 class Negykiraly(Scenario):
+  earns = 2
   def getWinner(self):
     for team in self.teams:
       if Card.kings <= set(team.hits):
         return team
 
 class XXI_fogas(Scenario):
+  earns = 42
   cards = {Card(XXI), Card(SKIZ)}
   def getWinner(self):
     self.name = 'XXI-es fogas'
@@ -61,11 +71,13 @@ class XXI_fogas(Scenario):
 
 class Volat(Scenario):
   def getWinner(self):
-    for team in self.teams: # should be 2
+    earns = self.partyPay * 6
+    for team in self.teams: # should be 2 teams
       if not sum([p.hits for p in team], []):
         return self.otherTeam(team)
 
 class Ultimi(Scenario):
+  earns = 10
   cards = {Card(I), Card(II)} | Card.kings
   roundIdx = -1 # last one
   def getWinner(self):
@@ -109,6 +121,7 @@ class Sasuhu(Sas, Uhu): pass
 class Kiralyuhu(Kiraly, Uhu): pass
 
 class Facan(Ultimi):
+  earns = 12  # or 10 again
   roundIdx = 0 # first round
   def checkIfTried(self, rundo):
     if rundo[0].color==TAROKK:

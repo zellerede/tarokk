@@ -27,6 +27,7 @@ class Player(object):
 #######################################
   def __init__(self, name):
     self.name = name
+    self.cash = 200
     self.newHand()
   def newHand(self):
     self.cards = []
@@ -169,11 +170,12 @@ class UserPlayer(Player):
     selected = False
     while not selected:
       crd = my_input("Kivel leszel? ")
-      try:
-        num = eval(crd.strip().upper())
-        selected = True
-      except NameError:
-        pass
+      if crd:
+        try:
+          num = eval(crd.strip().upper())
+          selected = True
+        except NameError:
+          pass
     return Card(num)
     
 
