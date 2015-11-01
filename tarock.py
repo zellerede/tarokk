@@ -253,6 +253,9 @@ def n():
 if __name__ == '__main__':
 #######################################
   table = Table()
-  auto()
-  # while True:
-  table.newParty()
+  # auto()
+  goOn = True
+  while goOn:
+    table.newParty()
+    more = my_input(_Play_more__)
+    goOn = not more.upper().startswith('N')

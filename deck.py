@@ -46,10 +46,7 @@ class Card(object):
   def __repr__(me):
     if me.isTarock: return str(me.num)
     else: 
-      # for HUN
-      # return "%s %s" %(me.color, me.num)
-      # for ENG
-      return "%s OF %s" %(me.num, me.color)
+      return _Card_repr_.format(color=me.color, num=me.num)
   
   def __gt__(me, other):
     if not other: return True

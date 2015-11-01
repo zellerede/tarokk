@@ -100,7 +100,7 @@ class Ultimi(Scenario):
     if round2check.winnerCard in self.cards:
       return self.teamOf(round2check.winner)
     if tried:
-      self.name += __attempt
+      self.name += _attempt
       return self.otherTeam(
                 self.teamOf(round2check.whoHad(card)) )
 

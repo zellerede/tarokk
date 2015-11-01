@@ -159,7 +159,10 @@ class UserPlayer(Player):
     return card
 
   def licit(self):
-    return int(my_input(_How_many_cards_to_claim___0__3____))
+    draw = ''
+    while not draw:
+      draw = my_input(_How_many_cards_to_claim___0__3____)
+    return int(draw)
 
   def showCards(self):
     s = str(self.cards)
