@@ -6,6 +6,8 @@ from util import *
 from deck import *
 from players import *
 from scenarios import *
+import myDict
+myDict.addTo(globals())
 
 CHANGE_SEQUENCE = [ (0,2,2,2),
                     (1,2,2,1),
@@ -19,7 +21,7 @@ class Table(object):
   def __init__(self):
     self.deck = Deck()
     self.players = Players( 
-         [UserPlayer('Eszak'), AIPlayer('Nyugat'), AIPlayer('Del'), AIPlayer('Kelet')] )
+         [UserPlayer(_North), AIPlayer(_West), AIPlayer(_South), AIPlayer(_East)] )
     self.dealer = -1 # so that user will start
     self.base = 1 # one unit of money
     # etc.
@@ -80,7 +82,7 @@ class Party(object):
   #######################################
     self.teller = self.caller
     self.numOfCardsToChange = self.players[self.teller].licit()
-    display(self.players[self.teller], "nyeri a licitet: ***", self.numOfCardsToChange, "***")
+    display(self.players[self.teller], _wins_the_bidding_____, self.numOfCardsToChange, "***")
     self.partyPay = 4 - self.numOfCardsToChange
     # self.scenarios[Parti].pay = 4 - self.numOfCardsToChange
     
@@ -135,7 +137,7 @@ class Party(object):
   def fizet(self):
   #######################################
     display()
-    display("Felvevok:", self.challengers)
+    display(_Declarers_, self.challengers)
     self._collectHitsOf(self.challengers)
     self._collectHitsOf(self.poors) # todo: arrange skart as well
     
@@ -145,7 +147,7 @@ class Party(object):
       scenario.investigate()
     
     for player in self.players.all():
-      display(player, ":", player.cash, " \t", continueLine=True)
+      display(player, ":", player.cash, " \t",)
     display()
     display('-'*84)
     display()
@@ -155,7 +157,7 @@ class Party(object):
       self.deck += team.hits
 
     # skart
-    display("Ellenfel skartja volt:", self.skartolt)
+    display(_Discards_of_opponent_were_, self.skartolt)
     display("\n"+ '-'*42 +"\n")
 
 ##############################
@@ -218,14 +220,15 @@ def clean():
   del sys.modules['deck']
   del sys.modules['players']
   del sys.modules['scenarios']
+  del sys.modules['myDict']
 
 def auto(on=True):
   cash = table.players[0].cash
   if on:
-    me = table.players[0] = AIPlayer('Eszak')
+    me = table.players[0] = AIPlayer(_North)
     me.cash = cash
   else:
-    me = table.players[0] = UserPlayer('Eszak')
+    me = table.players[0] = UserPlayer(_North)
     me.cash = cash
 
 class WithoutParenthesis:

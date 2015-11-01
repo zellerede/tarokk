@@ -157,3 +157,4 @@ def display(*what, **how):
     print string,
   else:
     print string
+

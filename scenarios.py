@@ -1,6 +1,9 @@
 ''' Tarock figures, i.e. play scenarios '''
 from util import buildOnObject
 from deck import *
+import myDict
+myDict.addTo(globals())
+
 
 @buildOnObject # of class Party
 class Scenario(object):
@@ -33,15 +36,15 @@ class Parti(Scenario):
     display("-"*32)
     enemy = self._calcHitsOf(self.poors)
     challengersWon = (challenged > enemy)
-    display("Felvevok", {True:"nyertek", False:"vesztettek"}[challengersWon])
+    display(_Declarers, {True:_won, False:_lost}[challengersWon])
     return {True:self.challengers, False:self.poors}[challengersWon]
 
   def _calcHitsOf(self, team):
     for p in team:
       s = sum([h.value for h in p.hits])
-      display(p, "vitt:", s)
+      display(p, _took_, s)
     summ = sum([c.value for c in team.hits])
-    display("Szumma", summ, "pont")
+    display(_Altogether, summ, _points)
     return summ
 
 class Duplajatek(Scenario):
@@ -80,7 +83,7 @@ class XXI_fogas(Scenario):
   earns = 42
   cards = {Card(XXI), Card(SKIZ)}
   def getWinner(self):
-    self.name = 'XXI-es fogas'
+    self.name = _XXI_catch
     for rundo in self.rounds:
       if self.cards <= set(rundo):
         theNewMajor = rundo.whoHad( Card(XXI) )
@@ -97,7 +100,7 @@ class Ultimi(Scenario):
     if round2check.winnerCard in self.cards:
       return self.teamOf(round2check.winner)
     if tried:
-      self.name += " kiserlet"
+      self.name += __attempt
       return self.otherTeam(
                 self.teamOf(round2check.whoHad(card)) )
 

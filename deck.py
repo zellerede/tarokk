@@ -1,5 +1,8 @@
 from collections import deque
 
+import myDict
+myDict.addTo(globals())
+
 from util import *
 addSymbolsTo(globals())
 
@@ -8,11 +11,11 @@ addSymbolsTo(globals())
 #
 class Card(object):
 #######################################
-  colors = Symbols('TAROKK','TREFF','KARO','PIKK','KOR', start=0)
-  figures = Symbols('ASZ','BOTOS','LOVAS','DAMA','KIRALY')
+  colors = Symbols('TAROKK',_CLUBS,_DIAMONDS,_SPADES,_HEARTS, start=0)
+  figures = Symbols(_ACE,_JACK,_KNIGHT,_QUEEN,_KING)
   tarocks = Symbols('I','II','III','IIII','V','VI','VII','VIII','IX','X',
                     'XI','XII','XIII','XIV','XV','XVI','XVII','XVIII',
-                    'XIX','XX','XXI','SKIZ')
+                    'XIX','XX','XXI','SKIZ') # 'SKIZ' = _CLOWN, but referred
   honours = set()
   kings   = set()
   
@@ -37,12 +40,16 @@ class Card(object):
         self.value = 1
     else:
       self.value = num.index
-      if num==KIRALY:
+      if self.value==5: # king
         Card.kings.add(self)
   
   def __repr__(me):
     if me.isTarock: return str(me.num)
-    else: return "%s %s" %(me.color, me.num)
+    else: 
+      # for HUN
+      # return "%s %s" %(me.color, me.num)
+      # for ENG
+      return "%s OF %s" %(me.num, me.color)
   
   def __gt__(me, other):
     if not other: return True

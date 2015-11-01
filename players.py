@@ -2,6 +2,9 @@ from random import randint, choice
 
 from deck import *
 from util import my_input, Cash
+import myDict
+myDict.addTo(globals())
+
 
 class Players(CycleList):
   def allFrom(self, idx=0):
@@ -113,25 +116,25 @@ class UserPlayer(Player):
 #######################################
   def __init__(self, name=''):
     Player.__init__(self, name)
-    self.name = 'Felseged, ' + name
+    self.name = _Your_majesty_ + name
 
   def emel(self):
-    return int( my_input("Hol emeled el? [2--40] ") )
+    return int( my_input(_Where_to_split_the_deck___2__40__) )
   
   def select(self, sofar):
     selected = False
     if sofar: 
-      display("Eddig",sofar, continueLine=True)
+      display(_So_far,sofar, continueLine=True)
     
     handShown = False
     while not selected:
-      crd = my_input("Melyiket teszed? ")
+      crd = my_input(_Which_card_to_call__)
       for card in self.cards:
         if crd.upper() == str(card):
           selected = True
           break
       if not (selected or handShown):
-        display(' -'*10+"  Kartyaid:", self.cards)
+        display(' -'*10+_Your_cards_, self.cards)
         handShown = True
       
       # to check against rules
@@ -141,22 +144,22 @@ class UserPlayer(Player):
     selected = False
     helpShown = handShown = False
     while not selected:
-      crd = my_input("Melyiket fekteted? ")
+      crd = my_input(_Choose_one_to_discard__)
       for card in someCards:
         if crd.upper() == str(card):
           selected = True
           break
       if not (selected or helpShown):
-        display(' -'*10+"  Valaszthato:", someCards)
+        display(' -'*10+_You_can_choose_among_, someCards)
         helpShown = True
       elif not (selected or handShown):
-        display(' -'*10+"  Kartyaid:", self.cards)
+        display(' -'*10+_Your_cards_, self.cards)
         handShown = True
       # to check against rules
     return card
 
   def licit(self):
-    return int(my_input("Hany lapot huznal? [0--3] : "))
+    return int(my_input(_How_many_cards_to_claim___0__3____))
 
   def showCards(self):
     s = str(self.cards)
@@ -169,7 +172,7 @@ class UserPlayer(Player):
   def askPartner(self):
     selected = False
     while not selected:
-      crd = my_input("Kivel leszel? ")
+      crd = my_input(_Choose_your_partner_by_a_card__)
       if crd:
         try:
           num = eval(crd.strip().upper())
