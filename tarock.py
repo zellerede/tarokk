@@ -57,7 +57,7 @@ class Party(object):
     for i in range(n):
       shuffle(self.deck)
     # debug
-    # print self.deck
+    # display(self.deck)
   
   def emel(self):
   #######################################
@@ -65,7 +65,7 @@ class Party(object):
     em = 42 - emelo.emel()
     self.deck.rotate(em)
     # debug
-    # print self.deck
+    # display(self.deck)
   
   def oszt(self):
   #######################################
@@ -80,7 +80,7 @@ class Party(object):
   #######################################
     self.teller = self.caller
     self.numOfCardsToChange = self.players[self.teller].licit()
-    print self.players[self.teller], "nyeri a licitet: ***", self.numOfCardsToChange, "***"
+    display(self.players[self.teller], "nyeri a licitet: ***", self.numOfCardsToChange, "***")
     self.partyPay = 4 - self.numOfCardsToChange
     # self.scenarios[Parti].pay = 4 - self.numOfCardsToChange
     
@@ -106,7 +106,7 @@ class Party(object):
   #######################################
     partnerCard = self.players[self.teller].askPartner()
     # debug
-    print self.players[self.teller], "will be with who has", partnerCard
+    display(self.players[self.teller], "will be with who has", partnerCard)
     self._arrangeGrpWithWhoHas(partnerCard)
     # further figures to make
     self.promised = [Parti]
@@ -130,12 +130,12 @@ class Party(object):
       self.rounds.append(rundo)
       self.caller = winner
       self.players[winner].take(rundo)
-      print self.players[winner].name, hit, ':', rundo
+      display(self.players[winner].name, hit, ':', rundo)
     
   def fizet(self):
   #######################################
-    print
-    print "Felvevok:", self.challengers
+    display()
+    display("Felvevok:", self.challengers)
     self._collectHitsOf(self.challengers)
     self._collectHitsOf(self.poors) # todo: arrange skart as well
     
@@ -145,18 +145,18 @@ class Party(object):
       scenario.investigate()
     
     for player in self.players.all():
-      print player, ":", player.cash, " \t",
-    print
-    print '-'*84
-    print
+      display(player, ":", player.cash, " \t", continueLine=True)
+    display()
+    display('-'*84)
+    display()
 
     # collect back the deck    
     for team in self.teams:
       self.deck += team.hits
 
     # skart
-    print "Ellenfel skartja volt:", self.skartolt
-    print "\n"+ '-'*42 +"\n"
+    display("Ellenfel skartja volt:", self.skartolt)
+    display("\n"+ '-'*42 +"\n")
 
 ##############################
 #

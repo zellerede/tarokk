@@ -77,9 +77,9 @@ class Player(object):
     return fektetett
   
   def sapka(self):
-    print "^"*42
-    print " "*8, self, "wearing the HAT"
-    print "v"*42
+    display("^"*42)
+    display(" "*8, self, "wearing the HAT")
+    display("v"*42)
 
 #######################################
 #
@@ -121,7 +121,7 @@ class UserPlayer(Player):
   def select(self, sofar):
     selected = False
     if sofar: 
-      print "Eddig",sofar,
+      display("Eddig",sofar, continueLine=True)
     
     handShown = False
     while not selected:
@@ -131,7 +131,7 @@ class UserPlayer(Player):
           selected = True
           break
       if not (selected or handShown):
-        print ' -'*10+"  Kartyaid:", self.cards
+        display(' -'*10+"  Kartyaid:", self.cards)
         handShown = True
       
       # to check against rules
@@ -147,10 +147,10 @@ class UserPlayer(Player):
           selected = True
           break
       if not (selected or helpShown):
-        print ' -'*10+"  Valaszthato:", someCards
+        display(' -'*10+"  Valaszthato:", someCards)
         helpShown = True
       elif not (selected or handShown):
-        print ' -'*10+"  Kartyaid:", self.cards
+        display(' -'*10+"  Kartyaid:", self.cards)
         handShown = True
       # to check against rules
     return card
@@ -161,10 +161,10 @@ class UserPlayer(Player):
   def showCards(self):
     s = str(self.cards)
     stars = "*" *(len(s)+4)
-    print stars
+    display(stars)
     print "*", s, "*"
     print "*", ' '*len(s), "*"
-    print stars
+    display(stars)
  
   def askPartner(self):
     selected = False

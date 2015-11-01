@@ -149,3 +149,11 @@ class Cash(int):
     return Cash(int.__add__(self, other))
   def __sub__(self, other):
     return Cash(int.__sub__(self, other))
+
+
+def display(*what, **how):
+  string = ' '.join(map(str,what))
+  if  how.get('continueLine', False):
+    print string,
+  else:
+    print string

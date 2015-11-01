@@ -12,36 +12,36 @@ class Scenario(object):
     winnerTeam = self.getWinner()
 
     payment = self.earns
-    # print type(self), self.promised, type(self) in self.promised
+    # display(type(self), self.promised, type(self) in self.promised)
     if type(self) not in self.promised:
       payment /= 2 # half the payment for silent scenario
 
     if winnerTeam and payment:
-      print self.name+"!", winnerTeam, ":", Cash(payment)
+      display(self.name+"!", winnerTeam, ":", Cash(payment))
       for player in winnerTeam:
-        # print player, player.cash, # debug
+        # display(player, player.cash, # debug)
         player.cash += payment
       for player in self.otherTeam(winnerTeam):
-        # print player, player.cash, # debug
+        # display(player, player.cash, # debug)
         player.cash -= payment
-      # print # debug
+      # display(# debug)
 
 class Parti(Scenario):
   def getWinner(self):
     self.earns = self.partyPay
     challenged = self._calcHitsOf(self.challengers)
-    print "-"*32
+    display("-"*32)
     enemy = self._calcHitsOf(self.poors)
     challengersWon = (challenged > enemy)
-    print "Felvevok", {True:"nyertek", False:"vesztettek"}[challengersWon]
+    display("Felvevok", {True:"nyertek", False:"vesztettek"}[challengersWon])
     return {True:self.challengers, False:self.poors}[challengersWon]
 
   def _calcHitsOf(self, team):
     for p in team:
       s = sum([h.value for h in p.hits])
-      print p, "vitt:", s
+      display(p, "vitt:", s)
     summ = sum([c.value for c in team.hits])
-    print "Szumma", summ, "pont"
+    display("Szumma", summ, "pont")
     return summ
 
 class Duplajatek(Scenario):
@@ -65,7 +65,7 @@ class Tuletroa(Scenario):
   earns = 2
   def getWinner(self):
     for team in self.teams:
-      # print team, "\n    ", team.hits
+      # display(team, "\n    ", team.hits)
       if Card.honours <= set(team.hits):
         return team
 
