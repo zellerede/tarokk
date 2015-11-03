@@ -2,8 +2,8 @@ from random import randint, choice
 
 from deck import *
 from util import my_input, Cash
-import myDict
-myDict.addTo(globals())
+import textItems
+textItems.addTo(globals())
 
 
 class Players(CycleList):

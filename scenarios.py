@@ -1,8 +1,8 @@
 ''' Tarock figures, i.e. play scenarios '''
 from util import buildOnObject
 from deck import *
-import myDict
-myDict.addTo(globals())
+import textItems
+textItems.addTo(globals())
 
 
 @buildOnObject # of class Party

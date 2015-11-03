@@ -6,8 +6,8 @@ from util import *
 from deck import *
 from players import *
 from scenarios import *
-import myDict
-myDict.addTo(globals())
+import textItems
+textItems.addTo(globals()) # get all string literals as global variables
 
 CHANGE_SEQUENCE = [ (0,2,2,2),
                     (1,2,2,1),
@@ -220,7 +220,7 @@ def clean():
   del sys.modules['deck']
   del sys.modules['players']
   del sys.modules['scenarios']
-  del sys.modules['myDict']
+  del sys.modules['textItems']
 
 def auto(on=True):
   cash = table.players[0].cash
