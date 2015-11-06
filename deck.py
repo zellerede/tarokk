@@ -1,7 +1,7 @@
 from collections import deque
 
-import myDict
-myDict.addTo(globals())
+import textItems
+textItems.addTo(globals())
 
 from util import *
 addSymbolsTo(globals())

@@ -1,13 +1,20 @@
 '''Tarokk'''
 
+import sys
 from random import randint, shuffle
+
+import textItems
+textItems.addTo(globals()) # get all string literals as global variables
+if len(sys.argv)>1:
+  language = sys.argv[1]
+  textItems.setLang(language)
 
 from util import *
 from deck import *
 from players import *
 from scenarios import *
-import textItems
-textItems.addTo(globals()) # get all string literals as global variables
+
+
 
 CHANGE_SEQUENCE = [ (0,2,2,2),
                     (1,2,2,1),
