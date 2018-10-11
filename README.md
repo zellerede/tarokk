@@ -1,14 +1,13 @@
 # tarokk
 Hungarian Tarock card game
 
-Initial, command line version. <br>
+Initial, command line version, using python2. <br>
 Under development. <br>
 
-In current stage, best is to enter a python command line interpreter, and then  <br>
-> \>\>\> execfile("tarock.py")  # runs a random tarock game with random players <br>
-> \>\>\> auto(False)  # so that user can also play <br>
-> \>\>\> n   # single-char command to run the next party, basically equivalent to <br>
-> \>\>\> table.newParty()
+Start by  `python tarock.py`
 
 For rules, see e.g.
 <a href="http://www.pagat.com/tarot/xx-hivas.html">this website</a>.
+
+In current stage, the bidding is not implemented, always the starting player is the declarer.
+And the user is not yet checked against the rules during playout.
