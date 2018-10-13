@@ -73,7 +73,7 @@ Usage:  addSymbolsTo(globals())
 
 def process(*funcs):
   for f in funcs:
-    print "Processing", f.__name__
+    display("Processing", f.__name__)
     f()
 
 #######################################
@@ -154,7 +154,7 @@ class Cash(int):
 def display(*what, **how):
   string = ' '.join(map(str,what))
   if  how.get('continueLine', False):
-    print string,
+    print(string, end="")
   else:
-    print string
+    print(string)
 

@@ -174,8 +174,8 @@ class UserPlayer(Player):
     s = str(self.cards)
     stars = "*" *(len(s)+4)
     display(stars)
-    print "*", s, "*"
-    print "*", ' '*len(s), "*"
+    display("*", s, "*")
+    display("*", ' '*len(s), "*")
     display(stars)
  
   def askPartner(self):

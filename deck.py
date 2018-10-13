@@ -24,7 +24,7 @@ class Card(object):
   def __new__(cls, num, color=TAROKK):
     if (color,num) in Card._createdCards:
       return Card._createdCards[(color,num)]
-    newCard = object.__new__(cls, num, color)
+    newCard = object.__new__(cls)
     Card._createdCards[(color,num)] = newCard
     return newCard
   
