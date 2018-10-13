@@ -46,24 +46,24 @@ class Player(object):
     pass
   
   def cardsOfColor(self, color):
-    return [card for card in self.cards if card.color==color]
+    return Deck(card for card in self.cards if card.color==color)
     
   def has(self, color):
     return bool( self.cardsOfColor(color) )
   
-  def anyCard(self, color=None):
+  def possibleCardsFor(self, color=None):
     cardsToCall = self.cardsOfColor(color)
     if not cardsToCall:
       cardsToCall = self.cards[:]
-    return choice(cardsToCall)
+    return cardsToCall
 
-  def select(self, sofar):
+  def callableCards(self, sofar):
     if not sofar:
-      return self.anyCard()
+      return self.possibleCardsFor()
     color = sofar[0].color
     if not self.has(color):
       color = TAROKK
-    return self.anyCard(color)
+    return self.possibleCardsFor(color)
   
   def call(self, sofar):
     card = self.select( sofar )
@@ -97,7 +97,9 @@ class AIPlayer(Player):
     partnerCardValue = max(maybePartner)
     return Card( Card.tarocks[partnerCardValue] )
 
-
+  def select(self, sofar):
+    return choice( self.callableCards(sofar) )
+    
   def selectToSkart(self, someCards):
     changeThese = [card for card in someCards if (card.color != TAROKK)]
     if changeThese: 
@@ -127,14 +129,18 @@ class UserPlayer(Player):
       display(_So_far,sofar, continueLine=True)
     
     handShown = False
+    cards = self.callableCards(sofar)
     while not selected:
       crd = my_input(_Which_card_to_call__)
-      for card in self.cards:
+      for card in cards:
         if crd.upper() == str(card):
           selected = True
           break
       if not (selected or handShown):
-        display(' -'*10+_Your_cards_, self.cards)
+        display(' -'*10+_Your_cards_, '[%s]' % (
+          ', '.join(str(crd) if crd in cards else str(crd).lower()
+                      for crd in self.cards)
+        ))
         handShown = True
       
       # to check against rules

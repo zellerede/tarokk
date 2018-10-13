@@ -31,6 +31,7 @@ class Scenario(object):
 
 class Parti(Scenario):
   def getWinner(self):
+    if not self.partyPay: return
     self.earns = self.partyPay
     challenged = self._calcHitsOf(self.challengers)
     display("-"*32)
@@ -49,6 +50,7 @@ class Parti(Scenario):
 
 class Duplajatek(Scenario):
   def getWinner(self):
+    if not self.partyPay: return
     self.earns = self.partyPay * 4
     for team in self.teams:
       score = sum([c.value for c in team.hits])
@@ -148,6 +150,6 @@ class Sasfacan(Sas, Facan): pass
 SCENARIOS = (Volat, Duplajatek, Parti, Tuletroa, Negykiraly, XXI_fogas, Pagatultimo, 
              Sasultimo, Kiralyultimo, Pagatuhu, Sasuhu, Pagatfacan, Sasfacan) 
      # plusz akar:
-     # -- tuletroa-rundo
-     # -- pagat-rundo, 
+     # -- tuletroa-rundo (egy korben a harom honor)
+     # -- pagat-rundo,   (pagat visz egy szinhivast)
      # -- egyszinu-rundo (kiraly v dama visz)
