@@ -10,13 +10,13 @@ class Players(CycleList):
   def allFrom(self, idx=0):
     for i in self.indicesFrom(idx):
       yield self[i]
-  
+
   all = allFrom
-  
+
   def indicesFrom(self, idx=0):
     for i in range(idx, idx+4):
       yield i % len(self)
-  
+
   def __sub__(self, sub):
     rest = Players(self)
     for x in sub:
@@ -41,16 +41,16 @@ class Player(object):
     return "Player %s" % self.name
   def __str__(self):
     return str(self.name)
-  
+
   def showCards(self):
     pass
-  
+
   def cardsOfColor(self, color):
     return Deck(card for card in self.cards if card.color==color)
-    
+
   def has(self, color):
     return bool( self.cardsOfColor(color) )
-  
+
   def possibleCardsFor(self, color=None):
     cardsToCall = self.cardsOfColor(color)
     if not cardsToCall:
@@ -64,12 +64,12 @@ class Player(object):
     if not self.has(color):
       color = TAROKK
     return self.possibleCardsFor(color)
-  
+
   def call(self, sofar):
     card = self.select( sofar )
     self.cards.remove(card)
     return card
-  
+
   def fektet(self, num):
     fektetett = []
     for i in range(num):
@@ -78,7 +78,7 @@ class Player(object):
       fektetett.append(card)
       self.cards.remove(card)
     return fektetett
-  
+
   def sapka(self):
     display("^"*42)
     display(" "*8, self, "wearing the HAT")
@@ -90,7 +90,7 @@ class AIPlayer(Player):
 #######################################
   def emel(self):
     return randint(2,40)
-  
+
   def askPartner(self):
     tarokks = self.cardsOfColor(TAROKK)
     maybePartner = set(range(2,21)) - {t.num.index for t in tarokks}
@@ -99,10 +99,10 @@ class AIPlayer(Player):
 
   def select(self, sofar):
     return choice( self.callableCards(sofar) )
-    
+
   def selectToSkart(self, someCards):
     changeThese = [card for card in someCards if (card.color != TAROKK)]
-    if changeThese: 
+    if changeThese:
       return choice(changeThese)
     return min(set(someCards)-{Card(II)})
 
@@ -122,12 +122,12 @@ class UserPlayer(Player):
 
   def emel(self):
     return int( my_input(_Where_to_split_the_deck___2__40__) )
-  
+
   def select(self, sofar):
     selected = False
-    if sofar: 
+    if sofar:
       display(_So_far,sofar, continueLine=True)
-    
+
     handShown = False
     cards = self.callableCards(sofar)
     while not selected:
@@ -142,7 +142,7 @@ class UserPlayer(Player):
                       for crd in self.cards)
         ))
         handShown = True
-      
+
       # to check against rules
     return card
 
@@ -177,7 +177,7 @@ class UserPlayer(Player):
     display("*", s, "*")
     display("*", ' '*len(s), "*")
     display(stars)
- 
+
   def askPartner(self):
     selected = False
     while not selected:
@@ -189,5 +189,5 @@ class UserPlayer(Player):
         except NameError:
           pass
     return Card(num)
-    
+
 

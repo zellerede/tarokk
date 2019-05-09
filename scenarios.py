@@ -17,15 +17,15 @@ class Scenario(object):
     payment = self.earns
     # display(type(self), self.promised, type(self) in self.promised)
     if type(self) not in self.promised:
-      payment /= 2 # half the payment for silent scenario
+      payment //= 2 # half the payment for silent scenario
 
     if winnerTeam and payment:
       display(self.name+"!", winnerTeam, ":", Cash(payment))
       for player in winnerTeam:
-        # display(player, player.cash, # debug)
+        #display(player, player.cash) # debug
         player.cash += payment
       for player in self.otherTeam(winnerTeam):
-        # display(player, player.cash, # debug)
+        #display(player, player.cash) # debug
         player.cash -= payment
       # display(# debug)
 
@@ -131,7 +131,7 @@ class Kiralyultimo(Kiraly, Ultimi): pass
 
 class Uhu(Ultimi):
   roundIdx = -2 # one before last
- 
+
 class Pagatuhu(Pagat, Uhu): pass
 class Sasuhu(Sas, Uhu): pass
 class Kiralyuhu(Kiraly, Uhu): pass
@@ -147,8 +147,8 @@ class Facan(Ultimi):
 class Pagatfacan(Pagat, Facan): pass
 class Sasfacan(Sas, Facan): pass
 
-SCENARIOS = (Volat, Duplajatek, Parti, Tuletroa, Negykiraly, XXI_fogas, Pagatultimo, 
-             Sasultimo, Kiralyultimo, Pagatuhu, Sasuhu, Pagatfacan, Sasfacan) 
+SCENARIOS = (Volat, Duplajatek, Parti, Tuletroa, Negykiraly, XXI_fogas, Pagatultimo,
+             Sasultimo, Kiralyultimo, Pagatuhu, Sasuhu, Pagatfacan, Sasfacan)
      # plusz akar:
      # -- tuletroa-rundo (egy korben a harom honor)
      # -- pagat-rundo,   (pagat visz egy szinhivast)

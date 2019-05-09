@@ -1,7 +1,7 @@
 #######################################
 #
-#  utility stuff: 
-#   - Symbols, 
+#  utility stuff:
+#   - Symbols,
 #   - processing a sequence of tasks
 #   - my_input using raw_input
 #   - @buildOnObject decorator
@@ -63,11 +63,11 @@ def Symbols(*symbols,**instructions):
   return symGroup
 
 def addSymbolsTo(namespace):
-  ''' This method is needed before usage of Symbols if module is imported. 
+  ''' This method is needed before usage of Symbols if module is imported.
 Usage:  addSymbolsTo(globals())
     or  addSymbolsTo(locals()) '''
   global _globals
-  _globals = namespace 
+  _globals = namespace
 
 #######################################
 
@@ -79,7 +79,7 @@ def process(*funcs):
 #######################################
 
 def my_input(*args, **kws):
-  x = raw_input(*args, **kws)
+  x = input(*args, **kws)
   if x in ['q', 'Q', 'quit', 'Quit']:
     raise Exception("See you")
   return x
@@ -138,9 +138,8 @@ x=X(obj,*rest,**kws)
 #
 class Cash(int):
 #######################################
-  def __init__(self, *args, **kws):
-    int.__init__(self, *args, **kws)
-    self.sign = '$'
+  sign = '$'
+
   def __repr__(self):
     return int.__repr__(self) + self.sign
   def __str__(self):
